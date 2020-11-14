@@ -28,6 +28,7 @@ TextView signUpTv;
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Login.this,SignUp.class));
+                //hi
             }
         });
     }
