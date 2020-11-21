@@ -25,7 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 public class Login extends AppCompatActivity {
 Button loginBtn;
 EditText user,pass;
-TextView signUpTv; //hai
+TextView signUpTv; //hello
 boolean isUser;
      @Override
     protected void onCreate(Bundle savedInstanceState) {
