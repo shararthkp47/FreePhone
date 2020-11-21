@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "934804349099",
+    "firebase_url": "https://freephoneapp-62e98.firebaseio.com",
+    "project_id": "freephoneapp-62e98",
+    "storage_bucket": "freephoneapp-62e98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934804349099:android:1f9025d5df24247d0b17ee",
+        "android_client_info": {
+          "package_name": "com.example.freephoneapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934804349099-eh3v12c29cmbu5fnuvn0515b1uui7e2b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.freephoneapp",
+            "certificate_hash": "bfe773d01dada5fabc6f4fad08aecb2a555ad84a"
+          }
+        },
+        {
+          "client_id": "934804349099-1qb3p1bm50qui6aqc8atmte9tbvnah09.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDB6Li3fiMZ7ZjzU-arr62YnZzwUs3pHb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934804349099-1qb3p1bm50qui6aqc8atmte9tbvnah09.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
