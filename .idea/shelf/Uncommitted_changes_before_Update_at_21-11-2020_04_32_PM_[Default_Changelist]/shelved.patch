@@ -1,0 +1,314 @@
+Index: app/src/main/java/com/example/freephoneapp/Login.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.freephoneapp;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport android.content.Intent;\r\n\r\n import android.os.Bundle;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.firestore.DocumentReference;\r\nimport com.google.firebase.firestore.DocumentSnapshot;\r\nimport com.google.firebase.firestore.EventListener;\r\nimport com.google.firebase.firestore.FirebaseFirestore;\r\nimport com.google.firebase.firestore.FirebaseFirestoreException;\r\n\r\npublic class Login extends AppCompatActivity {\r\nButton loginBtn;\r\nEditText user,pass;\r\nTextView signUpTv;\r\nboolean isUser;\r\n     @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_login);\r\n          loginBtn=findViewById(R.id.loginbtn);\r\n        user=findViewById(R.id.usernameet);\r\n        pass=findViewById(R.id.passwordet);\r\n        loginBtn.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                validate();\r\n              }\r\n        });\r\n        signUpTv=findViewById(R.id.signuptv);\r\n        signUpTv.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                 startActivity(new Intent(Login.this,SignUp.class));\r\n            }\r\n        });\r\n    }\r\n    public  boolean validate()    {\r\n        try {\r\n            if (user.getText().toString().isEmpty() || pass.getText().toString().isEmpty()) {\r\n                Toast.makeText(Login.this, \"please enter username/password\", Toast.LENGTH_SHORT).show();\r\n            }else {\r\n                final FirebaseFirestore database = FirebaseFirestore.getInstance();\r\n                DocumentReference docRef = database.collection(\"userlist\").document(user.getText().toString());\r\n                docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {\r\n                    @Override\r\n                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {\r\n                        if (value.exists()) {\r\n                            database.collection(\"userlist\").document(user.getText().toString())\r\n                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {\r\n                                @Override\r\n                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {\r\n                                    if (task.isSuccessful()) {\r\n                                        DocumentSnapshot document = task.getResult();\r\n                                        if (task.isComplete()) {\r\n                                            String str_pass = document.get(\"PASSWORD\").toString();\r\n                                            String str_name = document.get(\"NAME\").toString();\r\n                                            if (user.getText().toString().equals(str_name) && pass.getText().toString().equals(str_pass)) {\r\n                                                startActivity(new Intent(Login.this, FreeList.class));\r\n                                            } else {\r\n                                                Toast.makeText(Login.this, \"invalid login credentials\", Toast.LENGTH_SHORT).show();\r\n                                            }\r\n                                        }\r\n                                    }\r\n                                }\r\n                            });\r\n                        } else {\r\n                            Toast.makeText(Login.this, \"user does not exist\", Toast.LENGTH_SHORT).show();\r\n                        }\r\n                    }\r\n                });\r\n            }\r\n        }catch (Exception e){\r\n            e.printStackTrace();\r\n        }\r\n        return isUser;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/freephoneapp/Login.java	(revision f2ce809b970bfc0f39a34d208bbf290da1348c51)
++++ app/src/main/java/com/example/freephoneapp/Login.java	(date 1605955813177)
+@@ -1,7 +1,5 @@
+ package com.example.freephoneapp;
+ 
+-import androidx.annotation.NonNull;
+-import androidx.annotation.Nullable;
+ import androidx.appcompat.app.AppCompatActivity;
+ 
+ import android.content.Intent;
+@@ -9,83 +7,35 @@
+  import android.os.Bundle;
+ import android.view.View;
+ import android.widget.Button;
+-import android.widget.EditText;
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
+-import com.google.android.gms.tasks.OnCompleteListener;
+-import com.google.android.gms.tasks.Task;
+-import com.google.firebase.database.FirebaseDatabase;
+-import com.google.firebase.firestore.DocumentReference;
+-import com.google.firebase.firestore.DocumentSnapshot;
+-import com.google.firebase.firestore.EventListener;
+-import com.google.firebase.firestore.FirebaseFirestore;
+-import com.google.firebase.firestore.FirebaseFirestoreException;
+-
+ public class Login extends AppCompatActivity {
+ Button loginBtn;
+-EditText user,pass;
+ TextView signUpTv;
+-boolean isUser;
+-     @Override
++    FireBaseTest fb;
++    @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_login);
+           loginBtn=findViewById(R.id.loginbtn);
+-        user=findViewById(R.id.usernameet);
+-        pass=findViewById(R.id.passwordet);
++        fb=new FireBaseTest();
+         loginBtn.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                validate();
+-              }
++
++                fb.addToFirebase("message");
++                startActivity(new Intent(Login.this,FreeList.class));
++             }
+         });
+         signUpTv=findViewById(R.id.signuptv);
+         signUpTv.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+-                 startActivity(new Intent(Login.this,SignUp.class));
++
++                Toast.makeText(Login.this,  fb.retrieveFromFirebase("message"), Toast.LENGTH_SHORT).show();
++                startActivity(new Intent(Login.this,SignUp.class));
+             }
+         });
+     }
+-    public  boolean validate()    {
+-        try {
+-            if (user.getText().toString().isEmpty() || pass.getText().toString().isEmpty()) {
+-                Toast.makeText(Login.this, "please enter username/password", Toast.LENGTH_SHORT).show();
+-            }else {
+-                final FirebaseFirestore database = FirebaseFirestore.getInstance();
+-                DocumentReference docRef = database.collection("userlist").document(user.getText().toString());
+-                docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+-                    @Override
+-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+-                        if (value.exists()) {
+-                            database.collection("userlist").document(user.getText().toString())
+-                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+-                                @Override
+-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+-                                    if (task.isSuccessful()) {
+-                                        DocumentSnapshot document = task.getResult();
+-                                        if (task.isComplete()) {
+-                                            String str_pass = document.get("PASSWORD").toString();
+-                                            String str_name = document.get("NAME").toString();
+-                                            if (user.getText().toString().equals(str_name) && pass.getText().toString().equals(str_pass)) {
+-                                                startActivity(new Intent(Login.this, FreeList.class));
+-                                            } else {
+-                                                Toast.makeText(Login.this, "invalid login credentials", Toast.LENGTH_SHORT).show();
+-                                            }
+-                                        }
+-                                    }
+-                                }
+-                            });
+-                        } else {
+-                            Toast.makeText(Login.this, "user does not exist", Toast.LENGTH_SHORT).show();
+-                        }
+-                    }
+-                });
+-            }
+-        }catch (Exception e){
+-            e.printStackTrace();
+-        }
+-        return isUser;
+-    }
+ }
+\ No newline at end of file
+Index: gradlew.bat
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>@if \"%DEBUG%\" == \"\" @echo off\r\n@rem ##########################################################################\r\n@rem\r\n@rem  Gradle startup script for Windows\r\n@rem\r\n@rem ##########################################################################\r\n\r\n@rem Set local scope for the variables with windows NT shell\r\nif \"%OS%\"==\"Windows_NT\" setlocal\r\n\r\nset DIRNAME=%~dp0\r\nif \"%DIRNAME%\" == \"\" set DIRNAME=.\r\nset APP_BASE_NAME=%~n0\r\nset APP_HOME=%DIRNAME%\r\n\r\n@rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.\r\nset DEFAULT_JVM_OPTS=\r\n\r\n@rem Find java.exe\r\nif defined JAVA_HOME goto findJavaFromJavaHome\r\n\r\nset JAVA_EXE=java.exe\r\n%JAVA_EXE% -version >NUL 2>&1\r\nif \"%ERRORLEVEL%\" == \"0\" goto init\r\n\r\necho.\r\necho ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.\r\necho.\r\necho Please set the JAVA_HOME variable in your environment to match the\r\necho location of your Java installation.\r\n\r\ngoto fail\r\n\r\n:findJavaFromJavaHome\r\nset JAVA_HOME=%JAVA_HOME:\"=%\r\nset JAVA_EXE=%JAVA_HOME%/bin/java.exe\r\n\r\nif exist \"%JAVA_EXE%\" goto init\r\n\r\necho.\r\necho ERROR: JAVA_HOME is set to an invalid directory: %JAVA_HOME%\r\necho.\r\necho Please set the JAVA_HOME variable in your environment to match the\r\necho location of your Java installation.\r\n\r\ngoto fail\r\n\r\n:init\r\n@rem Get command-line arguments, handling Windows variants\r\n\r\nif not \"%OS%\" == \"Windows_NT\" goto win9xME_args\r\n\r\n:win9xME_args\r\n@rem Slurp the command line arguments.\r\nset CMD_LINE_ARGS=\r\nset _SKIP=2\r\n\r\n:win9xME_args_slurp\r\nif \"x%~1\" == \"x\" goto execute\r\n\r\nset CMD_LINE_ARGS=%*\r\n\r\n:execute\r\n@rem Setup the command line\r\n\r\nset CLASSPATH=%APP_HOME%\\gradle\\wrapper\\gradle-wrapper.jar\r\n\r\n@rem Execute Gradle\r\n\"%JAVA_EXE%\" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %GRADLE_OPTS% \"-Dorg.gradle.appname=%APP_BASE_NAME%\" -classpath \"%CLASSPATH%\" org.gradle.wrapper.GradleWrapperMain %CMD_LINE_ARGS%\r\n\r\n:end\r\n@rem End local scope for the variables with windows NT shell\r\nif \"%ERRORLEVEL%\"==\"0\" goto mainEnd\r\n\r\n:fail\r\nrem Set variable GRADLE_EXIT_CONSOLE if you need the _script_ return code instead of\r\nrem the _cmd.exe /c_ return code!\r\nif  not \"\" == \"%GRADLE_EXIT_CONSOLE%\" exit 1\r\nexit /b 1\r\n\r\n:mainEnd\r\nif \"%OS%\"==\"Windows_NT\" endlocal\r\n\r\n:omega\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- gradlew.bat	(revision f2ce809b970bfc0f39a34d208bbf290da1348c51)
++++ gradlew.bat	(date 1605955813274)
+@@ -1,3 +1,19 @@
++@rem
++@rem Copyright 2015 the original author or authors.
++@rem
++@rem Licensed under the Apache License, Version 2.0 (the "License");
++@rem you may not use this file except in compliance with the License.
++@rem You may obtain a copy of the License at
++@rem
++@rem      https://www.apache.org/licenses/LICENSE-2.0
++@rem
++@rem Unless required by applicable law or agreed to in writing, software
++@rem distributed under the License is distributed on an "AS IS" BASIS,
++@rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++@rem See the License for the specific language governing permissions and
++@rem limitations under the License.
++@rem
++
+ @if "%DEBUG%" == "" @echo off
+ @rem ##########################################################################
+ @rem
+@@ -14,7 +30,7 @@
+ set APP_HOME=%DIRNAME%
+ 
+ @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+-set DEFAULT_JVM_OPTS=
++set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
+ 
+ @rem Find java.exe
+ if defined JAVA_HOME goto findJavaFromJavaHome
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Fri Nov 13 20:13:58 IST 2020\r\ndistributionBase=GRADLE_USER_HOME\r\ndistributionPath=wrapper/dists\r\nzipStoreBase=GRADLE_USER_HOME\r\nzipStorePath=wrapper/dists\r\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-6.1.1-all.zip\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- gradle/wrapper/gradle-wrapper.properties	(revision f2ce809b970bfc0f39a34d208bbf290da1348c51)
++++ gradle/wrapper/gradle-wrapper.properties	(date 1605955813314)
+@@ -1,6 +1,5 @@
+-#Fri Nov 13 20:13:58 IST 2020
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
++distributionUrl=https\://services.gradle.org/distributions/gradle-6.1.1-bin.zip
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/compiler.xml	(date 1605955813391)
++++ .idea/compiler.xml	(date 1605955813391)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <bytecodeTargetLevel target="1.8" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision f2ce809b970bfc0f39a34d208bbf290da1348c51)
++++ .idea/gradle.xml	(date 1605955813399)
+@@ -15,6 +15,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: gradlew
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#!/usr/bin/env sh\r\n\r\n##############################################################################\r\n##\r\n##  Gradle start up script for UN*X\r\n##\r\n##############################################################################\r\n\r\n# Attempt to set APP_HOME\r\n# Resolve links: $0 may be a link\r\nPRG=\"$0\"\r\n# Need this for relative symlinks.\r\nwhile [ -h \"$PRG\" ] ; do\r\n    ls=`ls -ld \"$PRG\"`\r\n    link=`expr \"$ls\" : '.*-> \\(.*\\)$'`\r\n    if expr \"$link\" : '/.*' > /dev/null; then\r\n        PRG=\"$link\"\r\n    else\r\n        PRG=`dirname \"$PRG\"`\"/$link\"\r\n    fi\r\ndone\r\nSAVED=\"`pwd`\"\r\ncd \"`dirname \\\"$PRG\\\"`/\" >/dev/null\r\nAPP_HOME=\"`pwd -P`\"\r\ncd \"$SAVED\" >/dev/null\r\n\r\nAPP_NAME=\"Gradle\"\r\nAPP_BASE_NAME=`basename \"$0\"`\r\n\r\n# Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.\r\nDEFAULT_JVM_OPTS=\"\"\r\n\r\n# Use the maximum available, or set MAX_FD != -1 to use that value.\r\nMAX_FD=\"maximum\"\r\n\r\nwarn () {\r\n    echo \"$*\"\r\n}\r\n\r\ndie () {\r\n    echo\r\n    echo \"$*\"\r\n    echo\r\n    exit 1\r\n}\r\n\r\n# OS specific support (must be 'true' or 'false').\r\ncygwin=false\r\nmsys=false\r\ndarwin=false\r\nnonstop=false\r\ncase \"`uname`\" in\r\n  CYGWIN* )\r\n    cygwin=true\r\n    ;;\r\n  Darwin* )\r\n    darwin=true\r\n    ;;\r\n  MINGW* )\r\n    msys=true\r\n    ;;\r\n  NONSTOP* )\r\n    nonstop=true\r\n    ;;\r\nesac\r\n\r\nCLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar\r\n\r\n# Determine the Java command to use to start the JVM.\r\nif [ -n \"$JAVA_HOME\" ] ; then\r\n    if [ -x \"$JAVA_HOME/jre/sh/java\" ] ; then\r\n        # IBM's JDK on AIX uses strange locations for the executables\r\n        JAVACMD=\"$JAVA_HOME/jre/sh/java\"\r\n    else\r\n        JAVACMD=\"$JAVA_HOME/bin/java\"\r\n    fi\r\n    if [ ! -x \"$JAVACMD\" ] ; then\r\n        die \"ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME\r\n\r\nPlease set the JAVA_HOME variable in your environment to match the\r\nlocation of your Java installation.\"\r\n    fi\r\nelse\r\n    JAVACMD=\"java\"\r\n    which java >/dev/null 2>&1 || die \"ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.\r\n\r\nPlease set the JAVA_HOME variable in your environment to match the\r\nlocation of your Java installation.\"\r\nfi\r\n\r\n# Increase the maximum file descriptors if we can.\r\nif [ \"$cygwin\" = \"false\" -a \"$darwin\" = \"false\" -a \"$nonstop\" = \"false\" ] ; then\r\n    MAX_FD_LIMIT=`ulimit -H -n`\r\n    if [ $? -eq 0 ] ; then\r\n        if [ \"$MAX_FD\" = \"maximum\" -o \"$MAX_FD\" = \"max\" ] ; then\r\n            MAX_FD=\"$MAX_FD_LIMIT\"\r\n        fi\r\n        ulimit -n $MAX_FD\r\n        if [ $? -ne 0 ] ; then\r\n            warn \"Could not set maximum file descriptor limit: $MAX_FD\"\r\n        fi\r\n    else\r\n        warn \"Could not query maximum file descriptor limit: $MAX_FD_LIMIT\"\r\n    fi\r\nfi\r\n\r\n# For Darwin, add options to specify how the application appears in the dock\r\nif $darwin; then\r\n    GRADLE_OPTS=\"$GRADLE_OPTS \\\"-Xdock:name=$APP_NAME\\\" \\\"-Xdock:icon=$APP_HOME/media/gradle.icns\\\"\"\r\nfi\r\n\r\n# For Cygwin, switch paths to Windows format before running java\r\nif $cygwin ; then\r\n    APP_HOME=`cygpath --path --mixed \"$APP_HOME\"`\r\n    CLASSPATH=`cygpath --path --mixed \"$CLASSPATH\"`\r\n    JAVACMD=`cygpath --unix \"$JAVACMD\"`\r\n\r\n    # We build the pattern for arguments to be converted via cygpath\r\n    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`\r\n    SEP=\"\"\r\n    for dir in $ROOTDIRSRAW ; do\r\n        ROOTDIRS=\"$ROOTDIRS$SEP$dir\"\r\n        SEP=\"|\"\r\n    done\r\n    OURCYGPATTERN=\"(^($ROOTDIRS))\"\r\n    # Add a user-defined pattern to the cygpath arguments\r\n    if [ \"$GRADLE_CYGPATTERN\" != \"\" ] ; then\r\n        OURCYGPATTERN=\"$OURCYGPATTERN|($GRADLE_CYGPATTERN)\"\r\n    fi\r\n    # Now convert the arguments - kludge to limit ourselves to /bin/sh\r\n    i=0\r\n    for arg in \"$@\" ; do\r\n        CHECK=`echo \"$arg\"|egrep -c \"$OURCYGPATTERN\" -`\r\n        CHECK2=`echo \"$arg\"|egrep -c \"^-\"`                                 ### Determine if an option\r\n\r\n        if [ $CHECK -ne 0 ] && [ $CHECK2 -eq 0 ] ; then                    ### Added a condition\r\n            eval `echo args$i`=`cygpath --path --ignore --mixed \"$arg\"`\r\n        else\r\n            eval `echo args$i`=\"\\\"$arg\\\"\"\r\n        fi\r\n        i=$((i+1))\r\n    done\r\n    case $i in\r\n        (0) set -- ;;\r\n        (1) set -- \"$args0\" ;;\r\n        (2) set -- \"$args0\" \"$args1\" ;;\r\n        (3) set -- \"$args0\" \"$args1\" \"$args2\" ;;\r\n        (4) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" ;;\r\n        (5) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" ;;\r\n        (6) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" ;;\r\n        (7) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" \"$args6\" ;;\r\n        (8) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" \"$args6\" \"$args7\" ;;\r\n        (9) set -- \"$args0\" \"$args1\" \"$args2\" \"$args3\" \"$args4\" \"$args5\" \"$args6\" \"$args7\" \"$args8\" ;;\r\n    esac\r\nfi\r\n\r\n# Escape application args\r\nsave () {\r\n    for i do printf %s\\\\n \"$i\" | sed \"s/'/'\\\\\\\\''/g;1s/^/'/;\\$s/\\$/' \\\\\\\\/\" ; done\r\n    echo \" \"\r\n}\r\nAPP_ARGS=$(save \"$@\")\r\n\r\n# Collect all arguments for the java command, following the shell quoting and substitution rules\r\neval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS \"\\\"-Dorg.gradle.appname=$APP_BASE_NAME\\\"\" -classpath \"\\\"$CLASSPATH\\\"\" org.gradle.wrapper.GradleWrapperMain \"$APP_ARGS\"\r\n\r\n# by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong\r\nif [ \"$(uname)\" = \"Darwin\" ] && [ \"$HOME\" = \"$PWD\" ]; then\r\n  cd \"$(dirname \"$0\")\"\r\nfi\r\n\r\nexec \"$JAVACMD\" \"$@\"\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- gradlew	(revision f2ce809b970bfc0f39a34d208bbf290da1348c51)
++++ gradlew	(date 1605955813412)
+@@ -1,5 +1,21 @@
+ #!/usr/bin/env sh
+ 
++#
++# Copyright 2015 the original author or authors.
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      https://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
+ ##############################################################################
+ ##
+ ##  Gradle start up script for UN*X
+@@ -28,7 +44,7 @@
+ APP_BASE_NAME=`basename "$0"`
+ 
+ # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
+-DEFAULT_JVM_OPTS=""
++DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+ 
+ # Use the maximum available, or set MAX_FD != -1 to use that value.
+ MAX_FD="maximum"
+@@ -109,8 +125,8 @@
+     GRADLE_OPTS="$GRADLE_OPTS \"-Xdock:name=$APP_NAME\" \"-Xdock:icon=$APP_HOME/media/gradle.icns\""
+ fi
+ 
+-# For Cygwin, switch paths to Windows format before running java
+-if $cygwin ; then
++# For Cygwin or MSYS, switch paths to Windows format before running java
++if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
+     APP_HOME=`cygpath --path --mixed "$APP_HOME"`
+     CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
+     JAVACMD=`cygpath --unix "$JAVACMD"`
+@@ -138,19 +154,19 @@
+         else
+             eval `echo args$i`="\"$arg\""
+         fi
+-        i=$((i+1))
++        i=`expr $i + 1`
+     done
+     case $i in
+-        (0) set -- ;;
+-        (1) set -- "$args0" ;;
+-        (2) set -- "$args0" "$args1" ;;
+-        (3) set -- "$args0" "$args1" "$args2" ;;
+-        (4) set -- "$args0" "$args1" "$args2" "$args3" ;;
+-        (5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
+-        (6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
+-        (7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
+-        (8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
+-        (9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
++        0) set -- ;;
++        1) set -- "$args0" ;;
++        2) set -- "$args0" "$args1" ;;
++        3) set -- "$args0" "$args1" "$args2" ;;
++        4) set -- "$args0" "$args1" "$args2" "$args3" ;;
++        5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
++        6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
++        7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
++        8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
++        9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
+     esac
+ fi
+ 
+@@ -159,14 +175,9 @@
+     for i do printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/" ; done
+     echo " "
+ }
+-APP_ARGS=$(save "$@")
++APP_ARGS=`save "$@"`
+ 
+ # Collect all arguments for the java command, following the shell quoting and substitution rules
+ eval set -- $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS "\"-Dorg.gradle.appname=$APP_BASE_NAME\"" -classpath "\"$CLASSPATH\"" org.gradle.wrapper.GradleWrapperMain "$APP_ARGS"
+ 
+-# by default we should be in the correct project dir, but when run from Finder on Mac, the cwd is wrong
+-if [ "$(uname)" = "Darwin" ] && [ "$HOME" = "$PWD" ]; then
+-  cd "$(dirname "$0")"
+-fi
+-
+ exec "$JAVACMD" "$@"
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\r\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\r\n  </component>\r\n  <component name=\"ProjectType\">\r\n    <option name=\"id\" value=\"Android\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision f2ce809b970bfc0f39a34d208bbf290da1348c51)
++++ .idea/misc.xml	(date 1605955813447)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
