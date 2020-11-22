@@ -1,9 +1,11 @@
 package com.example.freephoneapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -64,10 +66,11 @@ public class FreeList extends AppCompatActivity {
                 LinearLayout friendListView=findViewById(R.id.freelist);
                 friendListView.addView(rowView, friendListView.getChildCount());
                 friendBtn.setText(userName);
-                 rowView.setOnClickListener(new View.OnClickListener() {
+                 friendBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                       // showAlertDialogForAddTravelDetail("User Details",email.getText().toString());
+                        Toast.makeText(FreeList.this, "Function not implemented", Toast.LENGTH_SHORT).show();
+                       //showAlertDialogForAddTravelDetail("User Details",email.getText().toString());
                     }
                 });
 
@@ -75,4 +78,27 @@ public class FreeList extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    public void showDialogForLogout(Context context, String title, String msg) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.yourDialog);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(msg).setCancelable(false)
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Utility.clearlogin(getApplicationContext());
+                        Intent logoutToLogin = new Intent(getApplicationContext(), Login.class);
+                        startActivity(logoutToLogin);
+                    }
+                })
+                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+    @Override
+    public void onBackPressed() {
+        showDialogForLogout(FreeList.this,"Warning","Want to Logout?");
+    }
 }

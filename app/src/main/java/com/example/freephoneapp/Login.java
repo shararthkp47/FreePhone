@@ -2,8 +2,11 @@ package com.example.freephoneapp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
  import android.os.Bundle;
@@ -87,5 +90,26 @@ boolean isUser;
             e.printStackTrace();
         }
         return isUser;
+    }
+    public void showDialogForExit(Context context, String title, String msg) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.yourDialog);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(msg).setCancelable(false)
+                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finishAffinity();
+                    }
+                })
+                .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+    @Override
+    public void onBackPressed() {
+        showDialogForExit(Login.this,"Warning","Want to exit from App?");
     }
 }
