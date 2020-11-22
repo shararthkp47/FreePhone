@@ -25,10 +25,13 @@ import java.util.List;
 
 public class FreeList extends AppCompatActivity {
     List<String> list;
+    String username;
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_free_list);
+        Intent intent=getIntent();
+        username=intent.getStringExtra("userName");
         try {
             FirebaseFirestore database = FirebaseFirestore.getInstance();
             database.collection("userlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -39,7 +42,7 @@ public class FreeList extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             list.add(document.getId());
                         }
-                        //list.remove("sharath");
+                        list.remove(username);
                     } else {
                         Toast.makeText(FreeList.this, "You don't have any friends in list ...", Toast.LENGTH_SHORT).show();
                     }

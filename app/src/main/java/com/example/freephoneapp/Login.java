@@ -69,7 +69,7 @@ boolean isUser;
                                             String str_pass = document.get("PASSWORD").toString();
                                             String str_name = document.get("NAME").toString();
                                             if (user.getText().toString().equals(str_name) && pass.getText().toString().equals(str_pass)) {
-                                                startActivity(new Intent(Login.this, FreeList.class));
+                                                startActivity(new Intent(Login.this, FreeList.class).putExtra("userName",str_name));
                                             } else {
                                                 Toast.makeText(Login.this, "invalid login credentials", Toast.LENGTH_SHORT).show();
                                             }
