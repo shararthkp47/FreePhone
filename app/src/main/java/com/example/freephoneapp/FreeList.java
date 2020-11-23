@@ -10,9 +10,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,12 +26,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FreeList extends AppCompatActivity {
     List<String> list;
     String username;
+    boolean wantToCloseDialog;
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +64,7 @@ public class FreeList extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    public void addFriendToList(String userName){
+    public void addFriendToList(final String userName){
              try {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View rowView = inflater.inflate(R.layout.friend_list, null);
@@ -69,8 +75,7 @@ public class FreeList extends AppCompatActivity {
                  friendBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(FreeList.this, "Function not implemented", Toast.LENGTH_SHORT).show();
-                       //showAlertDialogForAddTravelDetail("User Details",email.getText().toString());
+                        showAlertDialogForAddTravelDetail("Choose Chat Option with "+userName,userName);
                     }
                 });
 
@@ -84,7 +89,6 @@ public class FreeList extends AppCompatActivity {
         alertDialogBuilder.setMessage(msg).setCancelable(false)
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        //Utility.clearlogin(getApplicationContext());
                         Intent logoutToLogin = new Intent(getApplicationContext(), Login.class);
                         startActivity(logoutToLogin);
                     }
@@ -100,5 +104,49 @@ public class FreeList extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         showDialogForLogout(FreeList.this,"Warning","Want to Logout?");
+    }
+    public void showAlertDialogForAddTravelDetail(String title, final String username) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.yourDialog);
+            builder.setTitle(title);
+            wantToCloseDialog=false;
+             View customLayout = getLayoutInflater().inflate(R.layout.chat_option, null);
+            final Button textBtn = customLayout.findViewById(R.id.textbtn);
+
+            LinearLayout scrollOneView=customLayout.findViewById(R.id.chat_layout);
+            scrollOneView.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View view, MotionEvent ev)
+                {
+                    hideKeyboard(view);
+                    return false;
+                }
+            });
+            builder.setView(customLayout).setCancelable(false);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+            textBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        startActivity(new Intent(FreeList.this, TextChat.class).putExtra("selectedFriend", username));
+                        wantToCloseDialog = true;
+                        if (wantToCloseDialog)
+                            dialog.dismiss();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void hideKeyboard(View view)
+    {
+        InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
