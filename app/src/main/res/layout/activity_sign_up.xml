@@ -17,6 +17,7 @@
         android:ems="10"
         android:hint="Full Name"
         android:inputType="textPersonName"
+        android:digits="AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
         app:layout_constraintBottom_toTopOf="@+id/passwordet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

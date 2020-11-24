@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TextChat">
+    tools:context=".TextChat"
+    tools:visibility="visible">
 
     <TextView
-        android:id="@+id/chayheadertv"
+        android:id="@+id/headertv"
         android:layout_width="369dp"
         android:layout_height="52dp"
         android:layout_marginStart="16dp"
@@ -19,50 +20,69 @@
         android:textAllCaps="true"
         android:textSize="18sp"
         android:textStyle="bold|italic"
-        app:layout_constraintBottom_toTopOf="@+id/replaytv"
+        app:layout_constraintBottom_toTopOf="@+id/senttv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/replaytv"
+        android:id="@+id/senttv"
         android:layout_width="234dp"
         android:layout_height="49dp"
         android:layout_marginStart="88dp"
         android:layout_marginEnd="89dp"
-        android:layout_marginBottom="26dp"
+        android:layout_marginBottom="17dp"
         android:text="Sent Message"
         android:textAlignment="center"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/replayet"
+        android:textColor="#D12828"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/replaytv"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/replayet"
         android:layout_width="229dp"
         android:layout_height="58dp"
-        android:layout_marginStart="93dp"
-        android:layout_marginEnd="89dp"
-        android:layout_marginBottom="51dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="260dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Replay Message"
+        android:hint="Text message"
         android:textAlignment="center"
+        android:textColor="#12930D"
         android:textStyle="bold|italic"
-        app:layout_constraintBottom_toTopOf="@+id/sendbtn"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/sendbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginBottom="289dp"
+        android:layout_marginStart="53dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="270dp"
         android:text="send"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/replayet"
+        app:layout_constraintTop_toBottomOf="@+id/senttv"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/replaytv"
+        android:layout_width="238dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="93dp"
+        android:layout_marginEnd="99dp"
+        android:layout_marginBottom="59dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="#2152B5"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/replayet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

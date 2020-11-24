@@ -22,6 +22,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,16 +35,19 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 public class FreeList extends AppCompatActivity {
     List<String> list;
-    String username;
+    String loggedUsername;
     boolean wantToCloseDialog;
+    boolean isRefExist;
      @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_free_list);
         Intent intent=getIntent();
-        username=intent.getStringExtra("userName");
+        loggedUsername=intent.getStringExtra("userName");
         try {
             FirebaseFirestore database = FirebaseFirestore.getInstance();
             database.collection("userlist").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -50,7 +58,7 @@ public class FreeList extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             list.add(document.getId());
                         }
-                        list.remove(username);
+                        list.remove(loggedUsername);
                     } else {
                         Toast.makeText(FreeList.this, "You don't have any friends in list ...", Toast.LENGTH_SHORT).show();
                     }
@@ -130,7 +138,10 @@ public class FreeList extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try{
-                        startActivity(new Intent(FreeList.this, TextChat.class).putExtra("selectedFriend", username));
+                        checkReference(loggedUsername+"to"+username);
+                        checkReference(username+"to"+loggedUsername);
+                        startActivity(new Intent(FreeList.this, TextChat.class)
+                                .putExtra("selectedFriend", username).putExtra("loggedUser",loggedUsername));
                         wantToCloseDialog = true;
                         if (wantToCloseDialog)
                             dialog.dismiss();
@@ -143,6 +154,30 @@ public class FreeList extends AppCompatActivity {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+    public boolean checkReference(final String ref){
+         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+        rootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if (snapshot.hasChild(ref)) {
+
+                }else{
+                    textToFrom(ref,"hai,hello");
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+        });
+        return  isRefExist;
+    }
+    public void textToFrom(String ref,String msg){
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(ref);
+        myRef.setValue(msg);
     }
     public void hideKeyboard(View view)
     {
