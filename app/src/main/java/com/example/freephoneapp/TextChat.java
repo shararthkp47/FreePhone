@@ -92,7 +92,7 @@ EditText replayEt;
             mNotificationManager.createNotificationChannel(notificationChannel) ;
         }
 
-        Intent notificationIntent = new Intent(this, TextChat.class);
+        Intent notificationIntent = new Intent(this, Login.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         //notification message will get at NotificationView
         notificationIntent.putExtra("message", "This is a notification message");
@@ -122,7 +122,7 @@ EditText replayEt;
                 // whenever data at this location is updated.
                String  value = dataSnapshot.getValue(String.class);
                 sentTV.setText(friendName+" : "+value);
-                addNotification(friendName,value);
+                     addNotification(friendName, value);
             }
 
             @Override

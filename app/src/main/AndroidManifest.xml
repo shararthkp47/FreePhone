@@ -22,7 +22,6 @@
                 android:value=".FreeList" />
         </activity>
         <activity android:name=".FreeList" />
-        <activity android:name=".Main" />
         <activity android:name=".SignUp" />
         <activity android:name=".Login"></activity>
         <activity android:name=".SplashScreen">

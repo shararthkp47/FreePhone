@@ -17,7 +17,7 @@ TextView listTv;
         listTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Notification.this,Main.class));
+                startActivity(new Intent(Notification.this,FreeList.class));
             }
         });
     }
